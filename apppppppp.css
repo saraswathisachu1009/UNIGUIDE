@@ -1,0 +1,35 @@
+body {
+  text-align: center;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to bottom, #e0f7fa, #b2ebf2);
+  margin: 0;
+  padding: 50px;
+}
+
+h1 {
+  color: #006064;
+  font-size: 2.5em;
+}
+
+#resultBox {
+  margin: 20px auto;
+  padding: 40px;
+  border-radius: 15px;
+  width: 300px;
+  background-color: green;
+  color: white;
+  transition: background-color 0.5s;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+#resultBox.red {
+  animation: pulse 1s infinite;
+}
+
+audio { display: none; }

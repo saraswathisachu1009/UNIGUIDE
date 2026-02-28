@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <title>UNIGUIDE Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Splash intro that disappears after a few seconds -->
+  <div id="splash" class="splash">
+    <div class="splash-content">
+      <h1>Welcome to UNIGUIDE</h1>
+      <p>Your personal assistive guide — quick overview coming up...</p>
+    </div>
+  </div>
+
+  <!-- Small overview banner shown after splash hides -->
+  <div id="overviewBanner" class="overview-banner" aria-hidden="true">
+    <strong>Overview:</strong> UNIGUIDE is your ultimate notes-taking companion — log entries, manage business contacts, and customize alerts and themes to suit your workflow.
+  </div>
+
+  <header>
+    <div class="header-top">
+      <h1>🦯 UNIGUIDE</h1>
+      <div class="header-buttons">
+          <button id="helpBtn" class="help-btn">❓ Help</button>
+          <button id="businessBtn" class="business-btn">🗂️ Business</button>
+          <button id="settingsBtn" class="settings-btn">⚙️ Settings</button>
+          <button id="measurementBtn" class="measurement-btn">🔌 Measurement: On</button>
+          <button id="logsBtn" class="logs-btn">📋 Logs</button>
+        </div>
+    </div>
+    <p>Your ultimate notes-taking app — capture ideas, logs, and business data effortlessly</p>
+  </header>
+
+  <main>
+    <!-- Tab navigation for main features -->
+    <div class="tab-nav">
+      <button class="tab-btn active" data-target="personalSection">Personal</button>
+      <button class="tab-btn" data-target="businessSection">Business</button>
+      <button class="tab-btn" data-target="realtimeSection">Real-time</button>
+    </div>
+
+    <!-- Personal notes section -->
+    <section id="personalSection" class="tab-content active">
+      <h2>📓 Personal Notes</h2>
+      <div class="note-form">
+        <div class="setting-item">
+          <label for="noteDate">Date</label>
+          <input type="date" id="noteDate">
+        </div>
+        <div class="setting-item">
+          <label for="noteTime">Time</label>
+          <input type="time" id="noteTime">
+        </div>
+        <div class="setting-item">
+          <label for="noteEvent">Event</label>
+          <input type="text" id="noteEvent" placeholder="Short description">
+        </div>
+        <div class="setting-item">
+          <label for="noteHighlight">Highlight</label>
+          <textarea id="noteHighlight" rows="3" placeholder="Key points or thoughts"></textarea>
+        </div>
+        <div class="setting-item">
+          <button id="saveNoteBtn" class="reset-btn">Save Note</button>
+          <button id="cancelNoteBtn" class="clear-btn">Cancel</button>
+        </div>
+      </div>
+      <div class="note-list">
+        <div class="setting-item">
+          <label for="noteDateView">View date</label>
+          <input type="date" id="noteDateView">
+        </div>
+        <div id="notesContainer" class="logs-list" style="margin-top:10px"></div>
+      </div>
+    </section>
+
+    <!-- Business section (converted from previous modal) -->
+    <section id="businessSection" class="tab-content">
+      <h2>🗂️ Business Data</h2>
+      <div class="settings-container">
+        <div class="settings-section">
+          <h3>Add / Edit Entry</h3>
+          <div class="setting-item">
+            <label for="personName">Person</label>
+            <input type="text" id="personName" placeholder="Person name">
+          </div>
+
+          <div class="setting-item">
+            <label for="businessDate">Date</label>
+            <input type="date" id="businessDate">
+          </div>
+
+          <div class="setting-item">
+            <label for="businessTime">Time</label>
+            <input type="time" id="businessTime">
+          </div>
+
+          <div class="setting-item">
+            <label for="businessPlace">Place</label>
+            <input type="text" id="businessPlace" placeholder="Place name (e.g. Home, Market)">
+          </div>
+
+          <div class="setting-item">
+            <label for="businessCloseness">Closeness (cm)</label>
+            <input type="number" id="businessCloseness" min="0" max="10000" placeholder="e.g. 45">
+            <small style="display:block;color:#666;margin-top:6px">Enter a representative closeness measurement for this entry; averages are computed per-hour.</small>
+          </div>
+
+          <div class="setting-item">
+            <button id="saveBusinessBtn" class="reset-btn">Save Entry</button>
+            <button id="cancelBusinessBtn" class="clear-btn">Cancel</button>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3>Entries for date</h3>
+          <div class="setting-item">
+            <label for="businessDateView">Select date</label>
+            <input type="date" id="businessDateView">
+          </div>
+          <div id="businessList" class="logs-list" style="margin-top:10px"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Real-time section (original main content) -->
+    <section id="realtimeSection" class="tab-content">
+      <div id="resultBox">
+        <h2 id="status">Status</h2>
+        <p id="distanceValue">Distance: -- cm</p>
+        <div class="progress-bar">
+          <div id="distanceBar"></div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <h3>Instructions</h3>
+        <ul>
+          <li>Green → Safe zone</li>
+          <li>Yellow → Caution zone</li>
+          <li>Red → Danger zone</li>
+          <li>Move hand or object to test the buzzer</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <!-- Logs Modal -->
+  <div id="logsModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>📋 Activity Logs</h2>
+        <span class="close-btn">&times;</span>
+      </div>
+      <div id="logsContainer" class="logs-list">
+        <p>No logs yet</p>
+      </div>
+      <div class="modal-footer">
+        <button id="clearLogsBtn" class="clear-btn">Clear Logs</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settingsModal" class="modal">
+    <div class="modal-content settings-modal">
+      <div class="modal-header">
+        <h2>⚙️ Settings</h2>
+        <span class="close-btn" data-close="settings">&times;</span>
+      </div>
+      <div class="settings-container">
+        <!-- Dark Mode Toggle -->
+        <div class="settings-section">
+          <h3>Theme</h3>
+          <div class="setting-item">
+            <label for="darkModeToggle">Dark Mode</label>
+            <div class="toggle-switch">
+              <input type="checkbox" id="darkModeToggle" class="toggle-input">
+              <span class="toggle-slider"></span>
+            </div>
+          </div>
+          <div class="setting-item">
+            <label for="measurementToggle">Pause Measurements (buffer while paused)</label>
+            <div class="toggle-switch">
+              <input type="checkbox" id="measurementToggle" class="toggle-input">
+              <span class="toggle-slider"></span>
+            </div>
+          </div>
+          <div class="setting-item">
+            <label>Buffered readings</label>
+            <div style="display:flex;gap:8px;align-items:center">
+              <span id="bufferCount">0</span>
+              <button id="flushBufferBtn" class="reset-btn">Flush Now</button>
+              <button id="clearBufferBtn" class="clear-btn">Clear Buffer</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Color Settings -->
+        <div class="settings-section">
+          <h3>Zone Colors</h3>
+          
+          <div class="setting-item">
+            <label for="safeColor">Safe Zone Color</label>
+            <div class="color-picker-group">
+              <input type="color" id="safeColor" class="color-picker" value="#00ff00">
+              <span class="color-display" id="safeColorDisplay"></span>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <label for="cautionColor">Caution Zone Color</label>
+            <div class="color-picker-group">
+              <input type="color" id="cautionColor" class="color-picker" value="#ffff00">
+              <span class="color-display" id="cautionColorDisplay"></span>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <label for="dangerColor">Danger Zone Color</label>
+            <div class="color-picker-group">
+              <input type="color" id="dangerColor" class="color-picker" value="#ff0000">
+              <span class="color-display" id="dangerColorDisplay"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Distance Thresholds -->
+        <div class="settings-section">
+          <h3>Distance Thresholds (cm)</h3>
+          
+          <div class="setting-item">
+            <label for="dangerThreshold">Danger Zone (0 - ? cm)</label>
+            <div class="threshold-input-group">
+              <input type="number" id="dangerThreshold" class="threshold-input" min="0" max="200" value="50">
+              <span class="threshold-value" id="dangerValue">50</span>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <label for="cautionThreshold">Caution Zone (? - ? cm)</label>
+            <div class="threshold-input-group">
+              <input type="number" id="cautionThreshold" class="threshold-input" min="0" max="200" value="100">
+              <span class="threshold-value" id="cautionValue">100</span>
+            </div>
+          </div>
+
+          <div class="setting-info">
+            <p><strong>Example:</strong></p>
+            <ul>
+              <li>0-50 cm → Danger (Red)</li>
+              <li>50-100 cm → Caution (Yellow)</li>
+              <li>100+ cm → Safe (Green)</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Reset Button -->
+        <div class="settings-section">
+          <button id="resetSettingsBtn" class="reset-btn">Reset to Defaults</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Help/Guide Modal -->
+  <div id="helpModal" class="modal">
+    <div class="modal-content help-modal">
+      <div class="modal-header">
+        <h2>❓ Help & Guide</h2>
+        <span class="close-btn">&times;</span>
+      </div>
+      <div class="help-container">
+        
+        <!-- Safety Instructions -->
+        <div class="help-section">
+          <h3>🛡️ How to Use Safely</h3>
+          <ul>
+            <li><strong>Hold correctly:</strong> Grip the stick firmly near the handle</li>
+            <li><strong>Scan ahead:</strong> Move the stick side-to-side to detect obstacles</li>
+            <li><strong>Listen to alerts:</strong> Pay attention to buzzer patterns</li>
+            <li><strong>Test in safe areas:</strong> Practice before using in unfamiliar places</li>
+            <li><strong>Check surroundings:</strong> Don't rely solely on the device</li>
+            <li><strong>Maintain device:</strong> Keep sensor clean and battery charged</li>
+          </ul>
+        </div>
+
+        <!-- Color Codes & Alerts -->
+        <div class="help-section">
+          <h3>🎨 Color Codes & Alerts</h3>
+          <div class="alert-guide">
+            <div class="alert-item safe">
+              <div class="alert-color"></div>
+              <div class="alert-info">
+                <strong>Green (Safe Zone)</strong>
+                <p>Distance: > 100 cm</p>
+                <p>Status: Clear ahead - no immediate obstacles</p>
+                <p>Sound: Silent</p>
+              </div>
+            </div>
+            <div class="alert-item caution">
+              <div class="alert-color"></div>
+              <div class="alert-info">
+                <strong>Yellow (Caution Zone)</strong>
+                <p>Distance: 50-100 cm</p>
+                <p>Status: Obstacle detected - proceed carefully</p>
+                <p>Sound: Slow beeping (every 600ms)</p>
+              </div>
+            </div>
+            <div class="alert-item danger">
+              <div class="alert-color"></div>
+              <div class="alert-info">
+                <strong>Red (Danger Zone)</strong>
+                <p>Distance: < 50 cm</p>
+                <p>Status: Obstacle very close - stop immediately</p>
+                <p>Sound: Fast beeping (every 200ms)</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tutorial Section -->
+        <div class="help-section">
+          <h3>📚 Tutorial & Videos</h3>
+          <div class="tutorial-content">
+            <button id="voiceGuideBtn" class="tutorial-btn">🔊 Play Voice Instructions</button>
+            <div id="voiceStatus" class="voice-status"></div>
+            <p><em>Voice guide explains how to use UNIGUIDE step-by-step</em></p>
+          </div>
+        </div>
+
+        <!-- FAQs -->
+        <div class="help-section">
+          <h3>❓ FAQs & Troubleshooting</h3>
+          <div class="faq-container">
+            <div class="faq-item">
+              <button class="faq-toggle">Q: Why isn't the buzzer making sound?</button>
+              <div class="faq-answer">
+                <p>A: Check your device volume settings. Make sure the device isn't muted. Also ensure the sensor is not blocked.</p>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-toggle">Q: What distance should I set for different environments?</button>
+              <div class="faq-answer">
+                <p>A: For indoor spaces: danger=40cm, caution=80cm. For outdoors: danger=60cm, caution=120cm. Adjust based on your comfort level.</p>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-toggle">Q: How often should I check the sensor?</button>
+              <div class="faq-answer">
+                <p>A: Clean the sensor daily to ensure accuracy. Remove dust, dirt, and obstacles. A blocked sensor gives incorrect readings.</p>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-toggle">Q: Can I customize the colors?</button>
+              <div class="faq-answer">
+                <p>A: Yes! Go to Settings → Zone Colors to pick your preferred colors for each alert zone.</p>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-toggle">Q: How do I view my activity logs?</button>
+              <div class="faq-answer">
+                <p>A: Click the 📋 Logs button in the header to see your distance readings history. You can clear logs anytime.</p>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-toggle">Q: Does dark mode help with visibility?</button>
+              <div class="faq-answer">
+                <p>A: Yes! Dark mode reduces eye strain in low-light conditions. Toggle it in Settings → Theme.</p>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-toggle">Q: What should I do if the device stops responding?</button>
+              <div class="faq-answer">
+                <p>A: Refresh the browser page. Check your internet connection. Restart the server with 'node server.js' in terminal.</p>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-toggle">Q: Is the device accurate?</button>
+              <div class="faq-answer">
+                <p>A: Accuracy depends on the sensor quality and environment. Always use it as an aid, not a replacement for caution.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tips Section -->
+        <div class="help-section">
+          <h3>💡 Tips & Best Practices</h3>
+          <ul>
+            <li>Always test in a safe environment first</li>
+            <li>Keep the sensor perpendicular to obstacles for best detection</li>
+            <li>Adjust thresholds based on your walking speed</li>
+            <li>Use voice instructions to learn all features quickly</li>
+            <li>Report any issues for device improvement</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Business Modal -->
+  <div id="businessModal" class="modal">
+    <div class="modal-content business-modal">
+      <div class="modal-header">
+        <h2>🗂️ Business Data</h2>
+        <span class="close-btn">&times;</span>
+      </div>
+      <div class="settings-container">
+        <div class="settings-section">
+          <h3>Add / Edit Entry</h3>
+          <div class="setting-item">
+            <label for="personName">Person</label>
+            <input type="text" id="personName" placeholder="Person name">
+          </div>
+
+          <div class="setting-item">
+            <label for="businessDate">Date</label>
+            <input type="date" id="businessDate">
+          </div>
+
+          <div class="setting-item">
+            <label for="businessTime">Time</label>
+            <input type="time" id="businessTime">
+          </div>
+
+          <div class="setting-item">
+            <label for="businessPlace">Place</label>
+            <input type="text" id="businessPlace" placeholder="Place name (e.g. Home, Market)">
+          </div>
+
+          <div class="setting-item">
+            <label for="businessCloseness">Closeness (cm)</label>
+            <input type="number" id="businessCloseness" min="0" max="10000" placeholder="e.g. 45">
+            <small style="display:block;color:#666;margin-top:6px">Enter a representative closeness measurement for this entry; averages are computed per-hour.</small>
+          </div>
+
+          <div class="setting-item">
+            <button id="saveBusinessBtn" class="reset-btn">Save Entry</button>
+            <button id="cancelBusinessBtn" class="clear-btn">Cancel</button>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3>Entries for date</h3>
+          <div class="setting-item">
+            <label for="businessDateView">Select date</label>
+            <input type="date" id="businessDateView">
+          </div>
+          <div id="businessList" class="logs-list" style="margin-top:10px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <audio id="buzzer" src="https://www.soundjay.com/buttons/sounds/beep-01a.mp3"></audio>
+
+  <script src="script.js"></script>
+</body>
+</html>
